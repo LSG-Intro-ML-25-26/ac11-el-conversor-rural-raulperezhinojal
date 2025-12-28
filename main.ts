@@ -84,3 +84,23 @@ function generar_arbre() {
     
 }
 
+function inicialitzar_entorn() {
+    
+    //  --- IMPORTANTE: Carga TU mapa desde Assets ---
+    tiles.setCurrentTilemap(assets.tilemap`map`)
+    //  VENEDOR (NPC)
+    venedor = sprites.create(assets.image`miImagen2`, KIND_NPC)
+    tiles.placeOnTile(venedor, tiles.getTileLocation(8, 7))
+    //  JUGADOR (Nena)
+    jugador = sprites.create(assets.image`nena-front`, SpriteKind.Player)
+    tiles.placeOnTile(jugador, tiles.getTileLocation(8, 10))
+    scene.cameraFollowSprite(jugador)
+    controller.moveSprite(jugador)
+    info.setScore(0)
+    for (let i = 0; i < 10; i++) {
+        generar_arbre()
+    }
+}
+
+//  --- 4. BUCLES I ESDEVENIMENTS ---
+inicialitzar_entorn()

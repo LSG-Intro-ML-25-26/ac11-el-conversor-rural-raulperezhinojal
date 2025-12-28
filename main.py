@@ -73,3 +73,28 @@ def generar_arbre():
             tiles.place_on_tile(nou_arbre, loc)
         else:
             nou_arbre.destroy()
+
+def inicialitzar_entorn():
+    global venedor, jugador
+    
+    # --- IMPORTANTE: Carga TU mapa desde Assets ---
+    tiles.set_current_tilemap(assets.tilemap("""map"""))
+
+    # VENEDOR (NPC)
+    venedor = sprites.create(assets.image("miImagen2"), KIND_NPC)
+    tiles.place_on_tile(venedor, tiles.get_tile_location(8, 7))
+    
+    # JUGADOR (Nena)
+    jugador = sprites.create(assets.image("nena-front"), SpriteKind.Player)
+    tiles.place_on_tile(jugador, tiles.get_tile_location(8, 10))
+    scene.camera_follow_sprite(jugador)
+    controller.move_sprite(jugador)
+    
+    info.set_score(0)
+    
+    for i in range(10):
+        generar_arbre()
+
+# --- 4. BUCLES I ESDEVENIMENTS ---
+
+inicialitzar_entorn()
