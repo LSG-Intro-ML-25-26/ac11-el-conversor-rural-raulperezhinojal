@@ -6,7 +6,7 @@ let LLISTA_NOMS = ["Gallina", "Patates (kg)", "Cabra", "Ous", "Cavall"]
 let LLISTA_PREUS = [6, 1.33, 5, 0.25, 12]
 let ES_ANIMAL = [true, false, true, false, true]
 //  --- 2. LÒGICA DE MERCAT ---
-function validar_operacio(index: any, quantitat: number): boolean {
+function validar_operacio(index: number, quantitat: number): boolean {
     if (quantitat <= 0) {
         game.showLongText("Error: La quantitat ha de ser positiva!", DialogLayout.Bottom)
         return false
@@ -20,7 +20,7 @@ function validar_operacio(index: any, quantitat: number): boolean {
     return true
 }
 
-function processar_transaccio(index_prod: any) {
+function processar_transaccio(index_prod: number) {
     let q: number;
     let cost: number;
     let falta: number;
@@ -104,3 +104,70 @@ function inicialitzar_entorn() {
 
 //  --- 4. BUCLES I ESDEVENIMENTS ---
 inicialitzar_entorn()
+game.onUpdateInterval(3000, function on_update_interval() {
+    generar_arbre()
+})
+//  --- MENÚ DE TEXTO PARA SELECCIONAR---
+controller.A.onEvent(ControllerButtonEvent.Pressed, function on_a_pressed() {
+    let eleccio: number;
+    if (jugador.overlapsWith(venedor)) {
+        eleccio = game.askForNumber("1:Gal 2:Pat 3:Cab 4:Ou 5:Cav 0:Sortir", 1)
+        if (1 <= eleccio && eleccio <= 5) {
+            processar_transaccio(eleccio - 1)
+        }
+        
+    }
+    
+})
+//  -------------------------------------------------
+controller.B.onEvent(ControllerButtonEvent.Pressed, function on_b_pressed() {
+    let arbres = sprites.allOfKind(KIND_ARBRE)
+    let tajat = false
+    for (let arb of arbres) {
+        if (jugador.overlapsWith(arb)) {
+            scene.cameraShake(2, 200)
+            arb.destroy(effects.disintegrate, 200)
+            info.changeScoreBy(5)
+            music.smallCrash.play()
+            jugador.sayText("+5kg", 500)
+            tajat = true
+            break
+        }
+        
+    }
+    if (!tajat) {
+        jugador.sayText("No hi ha arbre!", 200)
+    }
+    
+})
+game.onUpdate(function on_update() {
+    if (Math.abs(jugador.x - venedor.x) < 30 && Math.abs(jugador.y - venedor.y) < 30) {
+        venedor.sayText("A: Mercat", 100)
+    }
+    
+    let algun_aprop = false
+    for (let arb of sprites.allOfKind(KIND_ARBRE)) {
+        if (Math.abs(jugador.x - arb.x) < 20 && Math.abs(jugador.y - arb.y) < 20) {
+            algun_aprop = true
+            break
+        }
+        
+    }
+    if (algun_aprop) {
+        jugador.sayText("B: Talar", 100)
+    }
+    
+})
+//  ANIMACIONES
+controller.up.onEvent(ControllerButtonEvent.Pressed, function on_up() {
+    animation.runImageAnimation(jugador, assets.animation`nena-animation-up`, 200, false)
+})
+controller.down.onEvent(ControllerButtonEvent.Pressed, function on_down() {
+    animation.runImageAnimation(jugador, assets.animation`nena-animation-down`, 200, false)
+})
+controller.left.onEvent(ControllerButtonEvent.Pressed, function on_left() {
+    animation.runImageAnimation(jugador, assets.animation`nena-animation-left`, 200, false)
+})
+controller.right.onEvent(ControllerButtonEvent.Pressed, function on_right() {
+    animation.runImageAnimation(jugador, assets.animation`nena-animation-right`, 200, false)
+})

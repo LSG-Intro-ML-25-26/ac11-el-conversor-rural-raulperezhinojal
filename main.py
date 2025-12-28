@@ -98,3 +98,60 @@ def inicialitzar_entorn():
 # --- 4. BUCLES I ESDEVENIMENTS ---
 
 inicialitzar_entorn()
+
+def on_update_interval():
+    generar_arbre()
+game.on_update_interval(3000, on_update_interval)
+
+# --- MENÚ DE TEXTO PARA SELECCIONAR---
+def on_a_pressed():
+    if jugador.overlaps_with(venedor):
+        eleccio = game.ask_for_number("1:Gal 2:Pat 3:Cab 4:Ou 5:Cav 0:Sortir", 1)
+        
+        if 1 <= eleccio <= 5:
+            processar_transaccio(eleccio - 1)
+controller.A.on_event(ControllerButtonEvent.PRESSED, on_a_pressed)
+# -------------------------------------------------
+
+def on_b_pressed():
+    arbres = sprites.all_of_kind(KIND_ARBRE)
+    tajat = False
+    
+    for arb in arbres:
+        if jugador.overlaps_with(arb):
+            scene.camera_shake(2, 200)
+            arb.destroy(effects.disintegrate, 200)
+            info.change_score_by(5)
+            music.small_crash.play()
+            jugador.say_text("+5kg", 500)
+            tajat = True
+            break
+            
+    if not tajat:
+        jugador.say_text("No hi ha arbre!", 200)
+controller.B.on_event(ControllerButtonEvent.PRESSED, on_b_pressed)
+
+def on_update():
+    if abs(jugador.x - venedor.x) < 30 and abs(jugador.y - venedor.y) < 30:
+        venedor.say_text("A: Mercat", 100)
+    
+    algun_aprop = False
+    for arb in sprites.all_of_kind(KIND_ARBRE):
+        if abs(jugador.x - arb.x) < 20 and abs(jugador.y - arb.y) < 20:
+            algun_aprop = True
+            break
+    
+    if algun_aprop:
+        jugador.say_text("B: Talar", 100)
+game.on_update(on_update)
+
+# ANIMACIONES
+def on_up(): animation.run_image_animation(jugador, assets.animation("nena-animation-up"), 200, False)
+def on_down(): animation.run_image_animation(jugador, assets.animation("nena-animation-down"), 200, False)
+def on_left(): animation.run_image_animation(jugador, assets.animation("nena-animation-left"), 200, False)
+def on_right(): animation.run_image_animation(jugador, assets.animation("nena-animation-right"), 200, False)
+
+controller.up.on_event(ControllerButtonEvent.PRESSED, on_up)
+controller.down.on_event(ControllerButtonEvent.PRESSED, on_down)
+controller.left.on_event(ControllerButtonEvent.PRESSED, on_left)
+controller.right.on_event(ControllerButtonEvent.PRESSED, on_right)
