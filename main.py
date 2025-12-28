@@ -59,3 +59,17 @@ def processar_transaccio(index_prod):
 # --- 3. CONFIGURACIÓ DE L'ENTORN ---
 jugador: Sprite = None
 venedor: Sprite = None
+
+def generar_arbre():
+    if len(sprites.all_of_kind(KIND_ARBRE)) < 15:
+        # Usa el nombre "miImagen" que tienes en assets para el árbol
+        nou_arbre = sprites.create(assets.image("miImagen"), KIND_ARBRE)
+        
+        c = randint(1, 14)
+        r = randint(1, 14)
+        loc = tiles.get_tile_location(c, r)
+        
+        if not tiles.tile_at_location_is_wall(loc) and abs(c - 8) > 2:
+            tiles.place_on_tile(nou_arbre, loc)
+        else:
+            nou_arbre.destroy()

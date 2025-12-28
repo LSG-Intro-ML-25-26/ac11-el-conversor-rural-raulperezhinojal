@@ -63,3 +63,24 @@ function processar_transaccio(index_prod: any) {
 //  --- 3. CONFIGURACIÓ DE L'ENTORN ---
 let jugador : Sprite = null
 let venedor : Sprite = null
+function generar_arbre() {
+    let nou_arbre: Sprite;
+    let c: number;
+    let r: number;
+    let loc: tiles.Location;
+    if (sprites.allOfKind(KIND_ARBRE).length < 15) {
+        //  Usa el nombre "miImagen" que tienes en assets para el árbol
+        nou_arbre = sprites.create(assets.image`miImagen`, KIND_ARBRE)
+        c = randint(1, 14)
+        r = randint(1, 14)
+        loc = tiles.getTileLocation(c, r)
+        if (!tiles.tileAtLocationIsWall(loc) && Math.abs(c - 8) > 2) {
+            tiles.placeOnTile(nou_arbre, loc)
+        } else {
+            nou_arbre.destroy()
+        }
+        
+    }
+    
+}
+
